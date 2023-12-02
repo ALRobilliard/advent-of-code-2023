@@ -16,8 +16,7 @@ function calculateOutput(text) {
   let total = 0;
   const lines = text.split('\n');
   for (const line of lines) {
-    if (possibleGame(line))
-      total += getGameId(line);
+    total += gamePower(line);
   }
 
   console.log(total)
@@ -42,6 +41,32 @@ function possibleGame(line) {
   }
 
   return true;
+}
+
+function gamePower(line) {
+  const rounds = line.substring(line.indexOf(': ') + 2).split(';').map(el => el.trim());
+
+  let minRed = 0,
+    minGreen = 0,
+    minBlue = 0;
+
+  for (const round of rounds) {
+    const counts = round.split(',').map(el => el.trim());
+
+    for (const count of counts) {
+      const num = parseInt(count.substring(0, count.indexOf(' ')));
+      const colour = count.substring(count.indexOf(' ') + 1);
+
+      if (colour === 'red' && num > minRed)
+        minRed = num;
+      else if (colour === 'green' && num > minGreen)
+        minGreen = num;
+      else if (colour === 'blue' && num > minBlue)
+        minBlue = num
+    }
+  }
+
+  return minRed * minBlue * minGreen;
 }
 
 function getGameId(line) {
